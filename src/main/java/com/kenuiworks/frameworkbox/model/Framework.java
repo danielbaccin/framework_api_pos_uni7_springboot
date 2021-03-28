@@ -1,8 +1,16 @@
 package com.kenuiworks.frameworkbox.model;
 
+import com.kenuiworks.frameworkbox.enums.SatisfactionLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Framework {
 
     @Id
@@ -10,44 +18,20 @@ public class Framework {
     private Long id;
 
     @Column(nullable = false)
-    private String titulo;
+    private String tittle;
 
     @Column(nullable = false)
-    private String descricao;
+    private String description;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private String language;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SatisfactionLevel satisfactionLevel;
 
-    public String getTitulo() {
-        return titulo;
-    }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
 
-    public String getDescricao() {
-        return descricao;
-    }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
 
-    @Override
-    public String toString() {
-        return "Framework{" +
-                "titulo='" + titulo + '\'' +
-                ", descricao='" + getBreveDescricao() + '\'' +
-                '}';
-    }
-
-    private String getBreveDescricao() {
-        return descricao;
-    }
 }
