@@ -18,7 +18,7 @@ public class Framework {
     private Long id;
 
     @Column(nullable = false)
-    private String tittle;
+    private String name;
 
     @Column(nullable = false)
     private String description;

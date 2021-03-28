@@ -3,11 +3,10 @@ package com.kenuiworks.frameworkbox.service;
 import com.kenuiworks.frameworkbox.builder.FrameworkDTOBuilder;
 import com.kenuiworks.frameworkbox.dto.FrameworkDTO;
 import com.kenuiworks.frameworkbox.exception.FrameworkAlreadyRegisteredException;
+import com.kenuiworks.frameworkbox.exception.FrameworkNotFoundException;
 import com.kenuiworks.frameworkbox.mapper.FrameworkMapper;
 import com.kenuiworks.frameworkbox.model.Framework;
 import com.kenuiworks.frameworkbox.repository.FrameworkRepository;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -37,7 +38,7 @@ public class FrameworkServiceTest {
         FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
         Framework framework = mapper.toModel(frameworkDTO);
 
-        when(repository.findByTittle(frameworkDTO.getTittle())).thenReturn(Optional.empty());
+        when(repository.findByName(frameworkDTO.getName())).thenReturn(Optional.empty());
         when(repository.save(framework)).thenReturn(framework);
 
         FrameworkDTO frameworkCreated = service.createFramework(frameworkDTO);
@@ -49,13 +50,62 @@ public class FrameworkServiceTest {
 
     @Test
     public void deveriaLancarExceptionAoSalvarUmFrameworkJaExistente() throws FrameworkAlreadyRegisteredException {
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+        Framework framework = mapper.toModel(frameworkDTO);
+
+        when(repository.findByName(framework.getName())).thenReturn(Optional.of(framework));
+
+        assertThrows(FrameworkAlreadyRegisteredException.class, () -> service.createFramework(frameworkDTO));
+    }
+
+    @Test
+    public void deveriaListarTodosFrameworks(){
 
         FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
         Framework framework = mapper.toModel(frameworkDTO);
 
-        when(repository.findByTittle(framework.getTittle())).thenReturn(Optional.of(framework));
+        when(repository.findAll()).thenReturn(Collections.singletonList(framework));
 
-        assertThrows(FrameworkAlreadyRegisteredException.class, () -> service.createFramework(frameworkDTO));
+        List<FrameworkDTO> allFrameworksDTO = service.findAll();
+
+        assertThat(allFrameworksDTO, is(not(empty())));
+        assertThat(allFrameworksDTO.get(0), is(equalTo(frameworkDTO)));
+
+    }
+
+
+    @Test
+    void deveriaRetornarListaVazia() {
+        when(repository.findAll()).thenReturn(Collections.EMPTY_LIST);
+
+        List<FrameworkDTO> listaVazia = service.findAll();
+
+        assertThat(listaVazia, is(empty()));
+    }
+
+
+    @Test
+    void deveriaRetornarFrameworkQndPesquisadoPorNome() throws FrameworkNotFoundException {
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+        Framework framework = mapper.toModel(frameworkDTO);
+
+        when(repository.findByName(frameworkDTO.getName())).thenReturn(Optional.of(framework));
+
+        FrameworkDTO byName = service.findByName(frameworkDTO.getName());
+
+        assertThat(byName.getId(), is(equalTo(frameworkDTO.getId())));
+        assertThat(byName.getDescription(), is(equalTo(frameworkDTO.getDescription())));
+        assertThat(byName.getSatisfactionLevel(), is(equalTo(frameworkDTO.getSatisfactionLevel())));
+
+    }
+
+    @Test
+    void deveriaLancarExceptionQndPesquisadoPorNomeInexistente() throws FrameworkNotFoundException {
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+
+        when(repository.findByName(frameworkDTO.getName())).thenReturn(Optional.empty());
+
+        assertThrows(FrameworkNotFoundException.class, () -> service.findByName(frameworkDTO.getName()));
     }
 
 

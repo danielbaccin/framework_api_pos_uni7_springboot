@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface FrameworkRepository extends JpaRepository<Framework, Long> {
 
-    Optional<Framework> findByTittle(String tittle);
+    Optional<Framework> findByName(String name);
 }

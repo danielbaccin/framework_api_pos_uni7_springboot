@@ -23,12 +23,12 @@ public class DummyData {
         List<Framework> frameworks = new ArrayList<>();
 
         Framework framework1 = new Framework();
-        framework1.setTittle("Spring Boot");
+        framework1.setName("Spring Boot");
         framework1.setDescription("O Spring Boot é uma ferramenta que visa facilitar o processo de configuração e publicação de aplicações que utilizem o ecossistema Spring.");
         frameworks.add(framework1);
 
         Framework framework2 = new Framework();
-        framework2.setTittle("Micronaut");
+        framework2.setName("Micronaut");
         framework2.setDescription("O Micronaut é uma estrutura completa e moderna baseada em JVM para a construção de microsserviços modulares e facilmente testáveis e aplicativos sem servidor.(https://micronaut.io/).");
         frameworks.add(framework2);
 

@@ -2,6 +2,7 @@ package com.kenuiworks.frameworkbox.controller;
 
 import com.kenuiworks.frameworkbox.dto.FrameworkDTO;
 import com.kenuiworks.frameworkbox.exception.FrameworkAlreadyRegisteredException;
+import com.kenuiworks.frameworkbox.exception.FrameworkNotFoundException;
 import com.kenuiworks.frameworkbox.model.Framework;
 import com.kenuiworks.frameworkbox.service.FrameworkService;
 import lombok.AllArgsConstructor;
@@ -20,16 +21,15 @@ public class FrameworkController {
     private FrameworkService service;
 
     @GetMapping
-    public List<Framework> getFrameworks(){
-        List<Framework> allFrameworks = service.findAll();
-        return allFrameworks;
+    public List<FrameworkDTO> getFrameworks(){
+        return service.findAll();
     }
 
-//    @GetMapping("/description/{id}")
-//    public Framework getDescription(@PathVariable("id") Long id){
-//        Framework frameworkById = service.findById(id);
-//        return frameworkById;
-//    }
+
+    @GetMapping("/{name}")
+    public FrameworkDTO findByName(@PathVariable String name) throws FrameworkNotFoundException {
+        return service.findByName(name);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

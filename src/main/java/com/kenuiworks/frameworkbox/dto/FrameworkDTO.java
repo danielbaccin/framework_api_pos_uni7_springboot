@@ -23,7 +23,7 @@ public class FrameworkDTO {
 
     @NotNull
     @Size(min = 1, max = 200)
-    private String tittle;
+    private String name;
 
     @NotNull
     @Size(min = 1, max = 500)
