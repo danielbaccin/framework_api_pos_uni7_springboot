@@ -3,7 +3,6 @@ package com.kenuiworks.frameworkbox.controller;
 import com.kenuiworks.frameworkbox.dto.FrameworkDTO;
 import com.kenuiworks.frameworkbox.exception.FrameworkAlreadyRegisteredException;
 import com.kenuiworks.frameworkbox.exception.FrameworkNotFoundException;
-import com.kenuiworks.frameworkbox.model.Framework;
 import com.kenuiworks.frameworkbox.service.FrameworkService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +34,11 @@ public class FrameworkController {
     @ResponseStatus(HttpStatus.CREATED)
     public FrameworkDTO createFramework(@RequestBody @Valid FrameworkDTO frameworkDTO) throws FrameworkAlreadyRegisteredException {
         return service.createFramework(frameworkDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) throws FrameworkNotFoundException {
+        service.deleteById(id);
     }
 }

@@ -33,7 +33,7 @@ public class FrameworkService{
     }
 
     public FrameworkDTO createFramework(FrameworkDTO frameworkDTO) throws FrameworkAlreadyRegisteredException {
-        verifyIfIsAlreadyRegistered(frameworkDTO.getName());
+        verifyIfIsAlreadyRegisteredWithName(frameworkDTO.getName());
         Framework framework = frameworkMapper.toModel(frameworkDTO);
         Framework saved = repository.save(framework);
         return frameworkMapper.toDTO(saved);
@@ -41,7 +41,7 @@ public class FrameworkService{
 
 
 
-    private void verifyIfIsAlreadyRegistered(String name) throws FrameworkAlreadyRegisteredException {
+    private void verifyIfIsAlreadyRegisteredWithName(String name) throws FrameworkAlreadyRegisteredException {
         Optional<Framework> optSaved = repository.findByName(name);
         if (optSaved.isPresent()) {
             throw new FrameworkAlreadyRegisteredException(name);
@@ -52,5 +52,20 @@ public class FrameworkService{
         Framework framework = repository.findByName(name)
                 .orElseThrow(() -> new FrameworkNotFoundException(name));
         return frameworkMapper.toDTO(framework);
+    }
+
+    public void deleteById(Long id) throws FrameworkNotFoundException {
+        Framework framework = verifyIfIsAlreadyRegisteredWithId(id);
+        repository.deleteById(id);
+    }
+
+    private Framework verifyIfIsAlreadyRegisteredWithId(Long id) throws FrameworkNotFoundException {
+        return repository.findById(id)
+                .orElseThrow( () -> new FrameworkNotFoundException(id));
+    }
+
+    private Framework verifyIfExists(Long id) throws FrameworkNotFoundException {
+        return repository.findById(id)
+                .orElseThrow(() -> new FrameworkNotFoundException(id));
     }
 }

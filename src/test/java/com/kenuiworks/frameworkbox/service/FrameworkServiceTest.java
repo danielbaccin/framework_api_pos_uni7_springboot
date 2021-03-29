@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -106,6 +107,22 @@ public class FrameworkServiceTest {
         when(repository.findByName(frameworkDTO.getName())).thenReturn(Optional.empty());
 
         assertThrows(FrameworkNotFoundException.class, () -> service.findByName(frameworkDTO.getName()));
+    }
+
+    @Test
+    void deveriaDeletarQuandoInformadoIdValido() throws FrameworkNotFoundException {
+
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+        Framework framework = mapper.toModel(frameworkDTO);
+
+        when(repository.findById(framework.getId())).thenReturn(Optional.of(framework));
+        doNothing().when(repository).deleteById(frameworkDTO.getId());
+
+        service.deleteById(frameworkDTO.getId());
+
+        Mockito.verify(repository, Mockito.times(1)).findById(frameworkDTO.getId());
+        Mockito.verify(repository, Mockito.times(1)).deleteById(frameworkDTO.getId());
+
     }
 
 
