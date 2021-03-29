@@ -30,6 +30,9 @@ public class Framework {
     @Column(nullable = false)
     private SatisfactionLevel satisfactionLevel;
 
+    @Column(nullable = false)
+    private Integer monthsOfExperience;
+
 
 
 

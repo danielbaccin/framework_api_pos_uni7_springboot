@@ -2,6 +2,7 @@ package com.kenuiworks.frameworkbox.controller;
 
 import com.kenuiworks.frameworkbox.builder.FrameworkDTOBuilder;
 import com.kenuiworks.frameworkbox.dto.FrameworkDTO;
+import com.kenuiworks.frameworkbox.dto.MonthOfExperienceDTO;
 import com.kenuiworks.frameworkbox.exception.FrameworkNotFoundException;
 import com.kenuiworks.frameworkbox.service.FrameworkService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FrameworkControllerTest    {
 
     private static final String FRAMEWORK_API_URL_PATH = "/api/v1/frameworks";
+    private static final String FRAMEWORK_API_SUBPATH_INCREMENT_URL = "/increment/month/experience";
     private static final long VALID_ID = 1L;
     private static final long INVALID_ID = 2l;
     public static final String NAME_INVALIDO = "nome invalido";
@@ -72,13 +74,13 @@ public class FrameworkControllerTest    {
     @Test
     void deveriaLancarExceptionAoTentarCriarFrameworkSemCampoObriatorio() throws Exception {
         // given
-        FrameworkDTO beerDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
-        beerDTO.setDescription(null);
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+        frameworkDTO.setDescription(null);
 
         // then
         mockMvc.perform(post(FRAMEWORK_API_URL_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(beerDTO)))
+                .content(asJsonString(frameworkDTO)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -145,7 +147,7 @@ public class FrameworkControllerTest    {
     }
 
     @Test
-    void deveriaReceberNotFoundQuandoChamadoDeleteComIdiNValido() throws Exception {
+    void deveriaReceberNotFoundQuandoChamadoDeleteComIdInValido() throws Exception {
         //when
         doThrow(FrameworkNotFoundException.class).when(service).deleteById(INVALID_ID);
 
@@ -153,6 +155,26 @@ public class FrameworkControllerTest    {
         mockMvc.perform(MockMvcRequestBuilders.delete(FRAMEWORK_API_URL_PATH + "/" + INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deveriaIncrementarQndPATHForChamado() throws Exception {
+        MonthOfExperienceDTO monthOfExperienceDTO = MonthOfExperienceDTO.builder()
+                .monthsOfExperience(12)
+                .build();
+
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+        frameworkDTO.setMonthsOfExperience(frameworkDTO.getMonthsOfExperience() + monthOfExperienceDTO.getMonthsOfExperience());
+
+        when(service.incrementMonthOfExperience(VALID_ID, monthOfExperienceDTO.getMonthsOfExperience())).thenReturn(frameworkDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch(FRAMEWORK_API_URL_PATH + "/" + VALID_ID + FRAMEWORK_API_SUBPATH_INCREMENT_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(monthOfExperienceDTO))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(frameworkDTO.getName())))
+                .andExpect(jsonPath("$.description", is(frameworkDTO.getDescription())))
+                .andExpect(jsonPath("$.language", is(frameworkDTO.getLanguage())))
+                .andExpect(jsonPath("$.satisfactionLevel", is(frameworkDTO.getSatisfactionLevel().toString())));
     }
 
 

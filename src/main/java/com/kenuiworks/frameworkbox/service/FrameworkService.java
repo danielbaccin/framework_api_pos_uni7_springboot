@@ -68,4 +68,11 @@ public class FrameworkService{
         return repository.findById(id)
                 .orElseThrow(() -> new FrameworkNotFoundException(id));
     }
+
+    public FrameworkDTO incrementMonthOfExperience(Long id, Integer monthsOfExperience) throws FrameworkNotFoundException {
+        Framework framework = verifyIfExists(id);
+        framework.setMonthsOfExperience(framework.getMonthsOfExperience() + monthsOfExperience);
+        Framework saved = repository.save(framework);
+        return frameworkMapper.toDTO(saved);
+    }
 }

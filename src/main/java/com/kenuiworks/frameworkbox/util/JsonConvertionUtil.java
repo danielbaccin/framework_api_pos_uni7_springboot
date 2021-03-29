@@ -8,7 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kenuiworks.frameworkbox.dto.FrameworkDTO;
 
 public class JsonConvertionUtil {
-    public static String asJsonString(FrameworkDTO frameworkDTO) {
+    public static String asJsonString(Object frameworkDTO) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

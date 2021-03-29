@@ -26,6 +26,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class FrameworkServiceTest {
 
+    private static final Long INVALID_ID = 2L;
     @Mock
     private FrameworkRepository repository;
     @InjectMocks
@@ -125,5 +126,31 @@ public class FrameworkServiceTest {
 
     }
 
+    @Test
+    void deveriaIncrementarMesesDeExperienciaNoFramework() throws FrameworkNotFoundException {
+        FrameworkDTO frameworkDTO = FrameworkDTOBuilder.builder().build().toFrameworkDTO();
+        Framework framework = mapper.toModel(frameworkDTO);
 
+        when(repository.findById(framework.getId())).thenReturn(Optional.of(framework));
+        when(repository.save(framework)).thenReturn(framework);
+
+        int quantityToIncrement = 2;
+        int expectedQuantityAfterIncrement = frameworkDTO.getMonthsOfExperience() + quantityToIncrement;
+
+        FrameworkDTO frameworkDTO1 = service.incrementMonthOfExperience(frameworkDTO.getId(), quantityToIncrement);
+
+        assertThat(expectedQuantityAfterIncrement, equalTo(frameworkDTO1.getMonthsOfExperience()));
+        assertThat(expectedQuantityAfterIncrement, greaterThan(frameworkDTO.getMonthsOfExperience()));
+
+    }
+
+
+    @Test
+    void deveriaNaoIncrementarMesesDeExperienciaQndIdInvalido() {
+        int quantityToIncrement = 10;
+
+        when(repository.findById(INVALID_ID)).thenReturn(Optional.empty());
+
+        assertThrows(FrameworkNotFoundException.class, () -> service.incrementMonthOfExperience(INVALID_ID, quantityToIncrement));
+    }
 }

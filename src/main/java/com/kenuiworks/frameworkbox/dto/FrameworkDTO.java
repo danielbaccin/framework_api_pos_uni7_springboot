@@ -36,6 +36,9 @@ public class FrameworkDTO {
     @NotNull
     private SatisfactionLevel satisfactionLevel;
 
+    @NotNull
+    private Integer monthsOfExperience;
+
 
 
 

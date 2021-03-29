@@ -24,12 +24,16 @@ public class FrameworkDTOBuilder {
     @Builder.Default
     private SatisfactionLevel satisfactionLevel = SatisfactionLevel.EXCELENT;
 
+    @Builder.Default
+    private Integer monthsOfExperience = 12;
+
     public FrameworkDTO toFrameworkDTO() {
         return new FrameworkDTO(id,
                 tittle,
                 description,
                 language,
-                satisfactionLevel);
+                satisfactionLevel,
+                monthsOfExperience);
     }
 
 }
