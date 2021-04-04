@@ -158,7 +158,7 @@ public class FrameworkControllerTest    {
     }
 
     @Test
-    void deveriaIncrementarQndPATHForChamado() throws Exception {
+    void deveriaIncrementarQndPATCHForChamado() throws Exception {
         MonthOfExperienceDTO monthOfExperienceDTO = MonthOfExperienceDTO.builder()
                 .monthsOfExperience(12)
                 .build();

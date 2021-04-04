@@ -22,7 +22,7 @@ public class FrameworkDTOBuilder {
     private String language = "Java";
 
     @Builder.Default
-    private SatisfactionLevel satisfactionLevel = SatisfactionLevel.EXCELENT;
+    private SatisfactionLevel satisfactionLevel = SatisfactionLevel.EXCELLENT;
 
     @Builder.Default
     private Integer monthsOfExperience = 12;

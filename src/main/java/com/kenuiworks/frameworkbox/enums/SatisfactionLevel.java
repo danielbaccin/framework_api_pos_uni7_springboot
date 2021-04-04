@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SatisfactionLevel {
 
-    EXCELENT("Excelente"),
+    EXCELLENT("Excelente"),
     GOOD("Bom"),
     NICE("Legal"),
     BAD("Ruim");
